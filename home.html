@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link href="css/bootstrap.css" rel="stylesheet" type="text/css">
+        <link href="css/styles.css" rel="stylesheet" type="text/css">
+        <title>PizzaPizza</title>
+    </head>
+    <body>
+        <div class="container">
+            <h1>Order Your Dream Pizza!</h1>
+            <button type="button" class="begin-order"><span id="order-button"></span></button>
+            <div class="selections" id="test">
+                <form class="size-select">
+                    <label for="size-select">Choose a pizza size: </label>
+                    <select id="size-select" name="size-select">
+                        <option disabled>--no size selected--</option>
+                        <option id="size" name="size-select" value="small">Small <span class="small-price"></span></option>
+                        <option id="size" name="size-select" value="medium">medium</option>
+                        <option id="size" name="size-select" value="large">Large</option>
+                        <option id="size" name="size-select" value="giant">Giant</option>
+                    </select>
+                </form>
+                <form class="toppings-select">
+                    <label for="toppings-select">Choose your toppings</label>
+                    <span class="toppings-select"></span>
+                </form>
+                <button type="submit" name="button">Add to Order</button>
+            </div>
+        </div>
+        <script src="js/jquery-1.11.2.js"></script>
+        <script src="js/scripts.js"></script>
+    </body>
+</html>

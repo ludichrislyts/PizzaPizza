@@ -1,0 +1,14 @@
+.begin-order{
+    color: red;
+}
+/*this is the form class that appears once the begin order is clicked*/
+.selections{
+    display:none;
+}
+/*this class is in the span in the select size option list*/
+.small-price{
+
+}
+.toppings-select{
+    display:none;
+}
