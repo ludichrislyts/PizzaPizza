@@ -12,3 +12,9 @@
 .toppings-select{
     display:none;
 }
+.quantity{
+    display:none;
+}
+#submit-order{
+    display:none;
+}

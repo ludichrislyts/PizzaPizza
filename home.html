@@ -7,25 +7,27 @@
     </head>
     <body>
         <div class="container">
+
             <h1>Order Your Dream Pizza!</h1>
             <button type="button" class="begin-order"><span id="order-button"></span></button>
-            <div class="selections" id="test">
-                <form class="size-select">
+            <form class="selections" id="test">
+                <div class="size-select">
                     <label for="size-select">Choose a pizza size: </label>
-                    <select id="size-select" name="size-select">
-                        <option disabled>--no size selected--</option>
-                        <option id="size" name="size-select" value="small">Small <span class="small-price"></span></option>
-                        <option id="size" name="size-select" value="medium">medium</option>
-                        <option id="size" name="size-select" value="large">Large</option>
-                        <option id="size" name="size-select" value="giant">Giant</option>
-                    </select>
-                </form>
-                <form class="toppings-select">
+                    <input type="radio" id="size" name="small" value=9.99>Small</input>
+                    <input type="radio" id="size" name="size" value="medium">Medium</input>
+                    <input type="radio" id="size" name="size" value="large">Large</input>
+                    <input type="radio" id="size" name="size" value="giant">Giant</input>
+                </div>
+                <div id="toppings-select">
                     <label for="toppings-select">Choose your toppings</label>
-                    <span class="toppings-select"></span>
-                </form>
-                <button type="submit" name="button">Add to Order</button>
-            </div>
+                    <input type="checkbox" id="topping" name="pepperoni" value=1.50>Pepperoni</input>
+                    <input type="checkbox" id="topping" name="tomato" value=1.50>Tomato</input>
+                    <div class="quantity">How Many?
+                        <input id="quantity" type="number" min=1><br />
+                    </div>
+                </div>
+                <button type="submit" class="btn" id="submit-order">Add to Order</button>
+            </form>
         </div>
         <script src="js/jquery-1.11.2.js"></script>
         <script src="js/scripts.js"></script>
