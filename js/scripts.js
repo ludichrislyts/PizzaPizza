@@ -5,31 +5,33 @@ function Order(){
 // Pizza constructor - adds cheese and sauce by default, price and size
 function Pizza(pieSize){
     this.toppings = [];
-    this.pizzaSize = pieSize;
-    this.price = pieSize.price;
-    this.toppings.push("cheese","sauce");
+    this.pizzaSize = pieSize.name;
+    this.price = Number(parseFloat(pieSize.price).toFixed(2));
+    this.toppings.push("Cheese","Sauce");
 }
 // Topping constructor - has a default price
 function Topping(name, price){
     this.name = name;
-    this.price = price;
+    this.price = parseFloat(price).toFixed(2);
+    // console.log(this.price + " topping price in constructor");
 }
 // Small pizza constructor
 function PieSize(name, price){
     this.name = name;
-    this.price = price;
+    this.price = Number(parseFloat(price).toFixed(2));
+    // console.log(this.price + " pizza price in constructor");
 }
 // add an item to a customer order
 Order.prototype.addToOrder = function(item){
-    this.total += item.price;
+    this.total += Number(this.total) + Number(parseFloat(item.price).toFixed(2));
 }
 Pizza.prototype.addTopping = function(topping){
     this.toppings.push(topping.name);
     var addPrice = parseFloat(topping.price).toFixed(2);
-    console.log(addPrice + " addPrice");
-    console.log((this.price + addPrice) + " parsed in addTopping");
-
-    this.price = Number(this.price) + Number(parseFloat(addPrice).toFixed(2));
+    // console.log(this.price + " pizza price in addTopping before topping add");
+    this.price += Number(parseFloat(addPrice));
+    this.price = Number(this.price.toFixed(2));
+    // console.log(this.price + " pizza price in addTopping after topping add");
 }
 $("#order-button").text("Begin Order");
 $(".begin-order").click(function(){
@@ -44,62 +46,46 @@ $(".begin-order").click(function(){
 var beginOrder = function(){
     $(".selections").submit(function(event){
         event.preventDefault();
-        // create new order
+    // create new order
         var order = new Order;
-        // create new size with name and 
+    // get the radio buttons for sizes and check which one is selected
         var sizes = ($(document.getElementById("size-select").getElementsByTagName("input")));
         for(var s = 0; s < sizes.length; s++){
             if(sizes[s].checked){
-                var name = $(sizes[s]).attr("name");
-                var price = parseFloat($(sizes[s]).val());
+        // if selected, create a new PieSize object
+                var name = $(sizes[s]).attr("id");
+                var price = ($(sizes[s]).val());
                 price = parseFloat(price).toFixed(2);
                 var pieSize = new PieSize(name, price);
-                console.log(pieSize);
             }
-        }
-        
-        var newPiePrice = parseFloat($("input#size").attr("value")).toFixed(2);
-
-        // create new pizza
+        } // end size radio button loop
+    // create new pizza
         var pizza = new Pizza(pieSize);
+        console.log(pizza);
         var toppings = [];
-        console.log($(document.getElementById("toppings-select").getElementsByTagName("input")));
-        //console.log($(document.getElementById("toppings-select").children));
+        // get toppings and create Topping objects
         toppings = ($(document.getElementById("toppings-select").getElementsByTagName("input")));
-        console.log(toppings);
-        //toppings.getElementsByTagName("input");
-        // console.log(toppings);
-        // var numOfPossibleToppings = $(".toppings-select").getElementsById("topping");
-        // console.log(numOfPossibleToppings);
-
         for(var i = 0; i < toppings.length; i++){
             if(toppings[i].checked){
-                var name = $(toppings[i]).attr("name");
-                //console.log(parseFloat($(toppings[i].attr("value"))));
+                var name = $(toppings[i]).attr("id");
                 var price = parseFloat($(toppings[i]).val());
                 price = parseFloat(price).toFixed(2);
-                //.toFixed(2));
-                console.log(price + " price");
                 var topping = new Topping(name, price);
                 pizza.addTopping(topping);
             }
-        }
+        }// end topping loop
         console.log(pizza);
-
+        order.addToOrder(pizza);
+        console.log(order);
+        $("#new-item").show();
+        $("#new-item").click("reset", function(){
+            $("input[name=size]").attr("checked", false);
+            $("input[name=topping]").attr("checked", false);
+            //$("#toppings-select").val([]);
+            $("#quantity-select").val([]);
+        });
+        
+        
     });
-}
-// selection class is the form holding all the pizza order options (size, toppings)
-    // $("#size-select").on("click",function(event){
-    //     event.preventDefault();
-    //     console.log($("#size-select option"));
-    //     console.log($(this));
-    //     pizza1 = new Pizza($("#size-select option").selected.val());
-    //     //console.log(pizza1);
-// });
-// }
-//var element = document.getElementById("size-select");
-//     var e = document.getElementById("ddlViewBy"); var strUser = e.options[e.selectedIndex].value;
+} // end begin order function
 
-
-    // $(".")
-// });

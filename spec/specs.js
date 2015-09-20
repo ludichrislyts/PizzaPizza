@@ -27,7 +27,6 @@ describe("Pizza", function(){
         var testPie = new Pizza(testPieSize);
         var testTopping = new Topping("pepperoni", 1.50);
         testPie.addTopping(testTopping);
-        console.log(testPie.toppings);
         expect(testPie.toppings).to.eql(["cheese","sauce","pepperoni"]);
         expect(testPie.price).to.equal(11.49);
     })

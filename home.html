@@ -14,27 +14,31 @@
                 <div id="size-select">
                     <div class="form-control">
                         <label class="form-group" for="size-select">Choose a pizza size: </label>
-                        <input class="form-group" type="radio" id="size" name="small" value=9.99>Small</input>
-                        <input class="form-group" type="radio" id="size" name="medium" value=12.99>Medium</input>
-                        <input class="form-group" type="radio" id="size" name="large" value=15.99>Large</input>
-                        <input class="form-group" type="radio" id="size" name="giant" value=18.99>Giant</input>
+                        <input class="form-group" type="radio" id="small" name="size" value=9.99>Small</input><br />
+                        <input class="form-group" type="radio" id="Medium" name="size" value=12.99>Medium</input><br />
+                        <input class="form-group" type="radio" id="Large" name="size" value=15.99>Large</input><br />
+                        <input class="form-group" type="radio" id="Giant" name="size" value=18.99>Giant</input><br />
                     </div>
                 </div>
                 <div id="toppings-select">
                     <div class="form-group">
                         <label class="form-control" for="toppings-select">Choose your toppings</label>
-                        <input class="form-control" type="checkbox" id="topping" name="pepperoni" value=1.50>Pepperoni</input><br />
-                        <input class="form-control" type="checkbox" id="topping" name="tomato" value=1.50>Tomato</input><br />
-                        <input class="form-control" type="checkbox" id="topping" name="pineapple" value=1.50>Pineapple</input><br />
-                        <input class="form-control" type="checkbox" id="topping" name="mushrooms" value=1.50>Mushrooms</input><br />
-                        <input class="form-control" type="checkbox" id="topping" name="extra_cheese" value=1.50>Extra Cheese</input><br />
+                        <input class="form-control" type="checkbox" id="Pepperoni" name="topping" value=1.50>Pepperoni</input><br />
+                        <input class="form-control" type="checkbox" id="Tomato" name="topping" value=1.50>Tomato</input><br />
+                        <input class="form-control" type="checkbox" id="Pineapple" name="topping" value=1.50>Pineapple</input><br />
+                        <input class="form-control" type="checkbox" id="Mushrooms" name="topping" value=1.50>Mushrooms</input><br />
+                        <input class="form-control" type="checkbox" id="Extra Cheese" name="topping" value=1.50>Extra Cheese</input><br />
                     </div>
-                    <div class="quantity">How Many?
+                    <div id="quantity-select">
+                        <label for="quantity">How Many?"</label>
                         <input id="quantity" type="number" min=1><br />
                     </div>
                 </div>
                 <button type="submit" class="btn" id="submit-order">Add to Order</button>
             </form>
+            <div id="new-item">
+                <button type="reset button">Order another!</button>
+            </div>
         </div>
         <script src="js/jquery-1.11.2.js"></script>
         <script src="js/scripts.js"></script>
