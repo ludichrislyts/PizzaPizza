@@ -25,7 +25,7 @@ Order.prototype.addToOrder = function(item){
 }
 Pizza.prototype.addTopping = function(topping){
     this.toppings.push(topping.name);
-    addPrice = parseFloat(topping.price).toFixed(2);
+    var addPrice = parseFloat(topping.price).toFixed(2);
     console.log(addPrice + " addPrice");
     console.log((this.price + addPrice) + " parsed in addTopping");
 
@@ -46,12 +46,22 @@ var beginOrder = function(){
         event.preventDefault();
         // create new order
         var order = new Order;
-        // create new size with name and price
-        var newSize = ($("input#size").attr("name"));
+        // create new size with name and 
+        var sizes = ($(document.getElementById("size-select").getElementsByTagName("input")));
+        for(var s = 0; s < sizes.length; s++){
+            if(sizes[s].checked){
+                var name = $(sizes[s]).attr("name");
+                var price = parseFloat($(sizes[s]).val());
+                price = parseFloat(price).toFixed(2);
+                var pieSize = new PieSize(name, price);
+                console.log(pieSize);
+            }
+        }
+        
         var newPiePrice = parseFloat($("input#size").attr("value")).toFixed(2);
-        var size = new PieSize(newSize, newPiePrice);
+
         // create new pizza
-        var pizza = new Pizza(size);
+        var pizza = new Pizza(pieSize);
         var toppings = [];
         console.log($(document.getElementById("toppings-select").getElementsByTagName("input")));
         //console.log($(document.getElementById("toppings-select").children));
