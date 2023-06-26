@@ -33,6 +33,9 @@ Pizza.prototype.addTopping = function(topping){
     this.price = Number(this.price.toFixed(2));
     // console.log(this.price + " pizza price in addTopping after topping add");
 }
+
+var newOrder = new Order;
+
 $("#order-button").text("Begin Order");
 $(".begin-order").click(function(){
     $("#order-button").text("Making Pizza");
@@ -41,13 +44,18 @@ $(".begin-order").click(function(){
     $(".toppings-select").show();
     $(".quantity").show();
     $("#submit-order").show();
-    beginOrder();
+    beginOrder(newOrder);
 });
-var beginOrder = function(){
+
+var addToOrder = function() {
+    beginOrder(newOrder);
+}
+
+var beginOrder = function(existingOrder = null){
     $(".selections").submit(function(event){
         event.preventDefault();
     // create new order
-        var order = new Order;
+        var order = existingOrder ?? new Order;
     // get the radio buttons for sizes and check which one is selected
         var sizes = ($(document.getElementById("size-select").getElementsByTagName("input")));
         for(var s = 0; s < sizes.length; s++){
@@ -77,6 +85,7 @@ var beginOrder = function(){
         console.log(pizza);
         order.addToOrder(pizza);
         console.log(order);
+        $("#total-price").text(order.total);
         $("#new-item").show();
         $("#new-item").click("reset", function(){
             $("input[name=size]").attr("checked", false);
@@ -84,7 +93,6 @@ var beginOrder = function(){
             //$("#toppings-select").val([]);
             $("#quantity-select").val([]);
         });
-        
         
     });
 } // end begin order function
