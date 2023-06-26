@@ -1,0 +1,113 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: AWS SAM template for AWS AppConfig-Codepipeline integration demo
+Parameters: 
+  Environment: 
+    Type: String
+    Default: dev
+    AllowedValues: 
+      - dev
+      - prod
+Resources:
+  ApiGatewayApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: 
+        Ref: Environment
+  ApiFunction: # Adds a GET api endpoints at "/" to the ApiGatewayApi via an Api event
+    Type: AWS::Serverless::Function
+    Properties:
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Path: /
+            Method: get
+            RestApiId:
+              Ref: ApiGatewayApi
+      Environment:
+        Variables:
+          appEnv:
+            Ref: Environment
+      Policies:
+        - Statement:
+          - Sid: GetConfig
+            Effect: Allow
+            Action:
+            - appconfig:GetConfiguration
+            Resource: !Sub 'arn:aws:appconfig:${AWS::Region}:${AWS::AccountId}:*'
+          - Sid: ReadS3
+            Effect: Allow
+            Action:
+            - s3:GetObject
+            - s3:ListBucketVersions
+            Resource: !Sub 'arn:aws:s3:::codepipeline-${AWS::Region}-*'            
+          - Sid: WriteLogs
+            Effect: Allow
+            Action:
+            - logs:CreateLogStream
+            - logs:CreateLogGroup
+            - logs:PutLogEvents
+            Resource: !Sub 'arn:aws:logs:${AWS::Region}:${AWS::AccountId}:*'
+      Runtime: nodejs14.x
+      Handler: index.handler
+      InlineCode: |
+        const AWS = require('aws-sdk');
+        const appconfig = new AWS.AppConfig({ apiVersion: '2019-10-09' });
+        const appEnv = process.env.appEnv;
+
+        const constParams = {
+          Application: 'PizzaPizza',
+          Configuration: '25roi4j',
+          Environment: appEnv
+        };
+
+
+        let cachedParams = {};
+        let cachedConfigData = {};
+        let parsedConfigData = {};
+        exports.handler = async (event) => {
+
+          // Check if ClientId is defined
+          if (!cachedParams.ClientId) {
+            cachedParams.ClientId = create_UUID();
+          }
+
+          // Merge constParams and cachedParams 
+          const params = { ...constParams, ...cachedParams };
+
+          // Call GetConfiguration API
+          const appConfigResponse = await appconfig.getConfiguration(params).promise();
+
+          // Add ClientConfigurationVersion to cachedParams if not present
+          if ((!cachedParams.ClientConfigurationVersion) || appConfigResponse.ConfigurationVersion !== cachedParams.ClientConfigurationVersion) {
+            cachedParams.ClientConfigurationVersion = appConfigResponse.ConfigurationVersion;
+          }
+
+          const configData = await Buffer.from(appConfigResponse.Content, 'base64').toString('ascii');
+
+          if ((!cachedConfigData) || (configData && cachedConfigData !== configData))
+            cachedConfigData = configData;
+
+          if (configData == null || configData == '') {
+            parsedConfigData = JSON.parse(cachedConfigData);
+          } else {
+            parsedConfigData = JSON.parse(configData);
+          }
+
+          return parsedConfigData;
+        };
+
+        function create_UUID() {
+          let dt = new Date().getTime();
+          const uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+            var r = (dt + Math.random() * 16) % 16 | 0;
+            dt = Math.floor(dt / 16);
+            return (c == 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+          });
+          return uuid;
+        }
+Outputs:
+  APIGateway:
+    Description: The API Gateway exposing your testing app
+    Value: !Sub "https://${ApiGatewayApi}.execute-api.${AWS::Region}.amazonaws.com/${Environment}"

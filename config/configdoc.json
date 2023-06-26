@@ -1,3 +1,8 @@
 {
-    "showOrderTotal": false
+    "prod": {
+        "showOrderTotal": false
+    },
+    "dev": {
+        "showOrderTotal": true
+    }
 }
