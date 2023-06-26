@@ -1,9 +1,13 @@
-getConfig = async () => {
-    const config = await fetch({
-        url: `https://yjfux63dy3.execute-api.us-east-1.amazonaws.com${window.env}`
+getConfig = () => {
+    fetch(window.configPath)
+    .then(res => {
+        return res.json();
+    }).then(data => {
+        console.log(data);
+        window.appConfig = data;
+    }).catch(err => {
+        console.log(err);
     });
-    console.log(config, 'CONFIG')
-  window.appConfig = config;
 };
 
  getConfig();

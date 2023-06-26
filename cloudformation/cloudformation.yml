@@ -94,8 +94,17 @@ Resources:
           } else {
             parsedConfigData = JSON.parse(configData);
           }
-
-          return parsedConfigData;
+          console.log(parsedConfigData);
+          
+          const response = {
+            statusCode: 200,
+            body: JSON.stringify(parsedConfigData),
+            headers: {
+              "Content-Type": "application/json",
+              "Access-Control-Allow-Origin" : "*",
+            }
+          };
+          return response;
         };
 
         function create_UUID() {
@@ -107,6 +116,7 @@ Resources:
           });
           return uuid;
         }
+
 Outputs:
   APIGateway:
     Description: The API Gateway exposing your testing app

@@ -86,7 +86,7 @@ var beginOrder = function(existingOrder = null){
         order.addToOrder(pizza);
         console.log(order);
         $("#total-price").text(order.total);
-        if (window.appConfig.showOrderTotal) {
+        if (window.appConfig[window.env].showOrderTotal) {
             $("#total-price-test").text(order.total);
         }
         $("#new-item").show();
