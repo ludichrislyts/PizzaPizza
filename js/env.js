@@ -1,1 +1,1 @@
-var env = 'dev'
+window.env = 'dev'

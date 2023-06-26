@@ -86,6 +86,9 @@ var beginOrder = function(existingOrder = null){
         order.addToOrder(pizza);
         console.log(order);
         $("#total-price").text(order.total);
+        if (parsedConfigData.showOrderTotal) {
+            $("#total-price-test").text(order.total);
+        }
         $("#new-item").show();
         $("#new-item").click("reset", function(){
             $("input[name=size]").attr("checked", false);
