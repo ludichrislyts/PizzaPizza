@@ -6,8 +6,14 @@
     display:none;
 }
 /*this class is in the span in the select size option list*/
-.small-price{
-
+.pizzatime{
+    min-height: 740px;
+    max-width: 740px;
+    background-image: url('pizza.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    margin: auto;
 }
 .toppings-select{
     display:none;
