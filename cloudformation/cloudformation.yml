@@ -53,69 +53,111 @@ Resources:
       Handler: index.handler
       InlineCode: |
         const AWS = require('aws-sdk');
-        const appconfig = new AWS.AppConfig({ apiVersion: '2019-10-09' });
+        const appconfig = new AWS.AppConfigData({ apiVersion: '2021-11-11'});
         const appEnv = process.env.appEnv;
+                const constParams = {
+                  ApplicationIdentifier: 'PizzaPizza',
+                  ConfigurationProfileIdentifier: '25roi4j',
+                  EnvironmentIdentifier: appEnv
+                };
 
-        const constParams = {
-          Application: 'PizzaPizza',
-          Configuration: '25roi4j',
-          Environment: appEnv
-        };
+                const constFlagParams = {
+                  ApplicationIdentifier: 'PizzaPizza',
+                  ConfigurationProfileIdentifier: 'bw4akte',
+                  EnvironmentIdentifier: appEnv
+                };
 
 
-        let cachedParams = {};
-        let cachedConfigData = {};
-        let parsedConfigData = {};
-        exports.handler = async (event) => {
+                let cachedParams = {};
+                let cachedFlagParams = {};
+                let cachedConfigData = {};
+                let cachedFlagConfigData = {};
+                let parsedConfigData = {};
+                let parsedFlagConfigData = {};
 
-          // Check if ClientId is defined
-          if (!cachedParams.ClientId) {
-            cachedParams.ClientId = create_UUID();
-          }
+                
 
-          // Merge constParams and cachedParams 
-          const params = { ...constParams, ...cachedParams };
+                exports.handler = async (event) => {
+                  // Merge constParams and cachedParams 
+                  const params = { ...constParams, ...cachedParams };
+                  const flagParams = { ...constFlagParams, ...cachedFlagParams };
 
-          // Call GetConfiguration API
-          const appConfigResponse = await appconfig.getConfiguration(params).promise();
+                  // Call GetConfiguration API
+                    const token = await new Promise((resolve, reject) => {
+                      appconfig.startConfigurationSession(params, (err, data) => {
+                        if (err) {
+                          reject(err);
+                        } else {
+                          resolve(data);
+                        }
+                      });
+                    });
 
-          // Add ClientConfigurationVersion to cachedParams if not present
-          if ((!cachedParams.ClientConfigurationVersion) || appConfigResponse.ConfigurationVersion !== cachedParams.ClientConfigurationVersion) {
-            cachedParams.ClientConfigurationVersion = appConfigResponse.ConfigurationVersion;
-          }
+                  const flagToken = await new Promise((resolve, reject) => {
+                    appconfig.startConfigurationSession(flagParams, (err, data) => {
+                      if (err) {
+                        reject(err);
+                      } else {
+                        resolve(data);
+                      }
+                    });
+                  });
 
-          const configData = await Buffer.from(appConfigResponse.Content, 'base64').toString('ascii');
+                  console.log(flagToken, 'flagggg')
 
-          if ((!cachedConfigData) || (configData && cachedConfigData !== configData))
-            cachedConfigData = configData;
+                  // Call GetConfiguration API
+                          const appConfigResponse = await appconfig.getLatestConfiguration({ConfigurationToken: token.InitialConfigurationToken}).promise();
+                          const appFlagConfigResponse = await appconfig.getLatestConfiguration({ConfigurationToken: flagToken.InitialConfigurationToken}).promise();
 
-          if (configData == null || configData == '') {
-            parsedConfigData = JSON.parse(cachedConfigData);
-          } else {
-            parsedConfigData = JSON.parse(configData);
-          }
-          console.log(parsedConfigData);
-          
-          const response = {
-            statusCode: 200,
-            body: JSON.stringify(parsedConfigData),
-            headers: {
-              "Content-Type": "application/json",
-              "Access-Control-Allow-Origin" : "*",
-            }
-          };
-          return response;
-        };
 
-        function create_UUID() {
-          let dt = new Date().getTime();
-          const uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-            var r = (dt + Math.random() * 16) % 16 | 0;
-            dt = Math.floor(dt / 16);
-            return (c == 'x' ? r : (r & 0x3 | 0x8)).toString(16);
-          });
-          return uuid;
-        }
+                  const configData = await Buffer.from(appConfigResponse.Configuration, 'base64').toString('ascii');
+                  const flagConfigData = await Buffer.from(appFlagConfigResponse.Configuration, 'base64').toString('ascii');
+
+                  if ((!cachedConfigData) || (configData && cachedConfigData !== configData)) {
+                    cachedConfigData = configData;
+                  }
+                  if ((!cachedFlagConfigData) || (flagConfigData && cachedFlagConfigData !== flagConfigData)) {
+                    cachedFlagConfigData = flagConfigData;
+                  }
+
+                  if (configData == null || configData == '') {
+                    parsedConfigData = JSON.parse(cachedConfigData);
+                  } else {
+                    parsedConfigData = JSON.parse(configData);
+                  }
+                  if (flagConfigData == null || flagConfigData == '') {
+                    parsedFlagConfigData = JSON.parse(cachedFlagConfigData);
+                  } else {
+                    parsedFlagConfigData = JSON.parse(flagConfigData);
+                  }
+
+                  const allConfigs = {
+                    ...parsedConfigData,
+                    ...parsedFlagConfigData
+                  }
+
+                  console.log(allConfigs);
+                  
+                  const response = {
+                    statusCode: 200,
+                    body: JSON.stringify(allConfigs),
+                    headers: {
+                      "Content-Type": "application/json",
+                      "Access-Control-Allow-Origin" : "*",
+                    }
+                  };
+                  return response;
+                };
+
+                function create_UUID() {
+                  let dt = new Date().getTime();
+                  const uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+                    var r = (dt + Math.random() * 16) % 16 | 0;
+                    dt = Math.floor(dt / 16);
+                    return (c == 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+                  });
+                  return uuid;
+                }
 
 Outputs:
   APIGateway:
