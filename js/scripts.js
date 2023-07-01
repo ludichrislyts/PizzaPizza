@@ -51,7 +51,16 @@ var addToOrder = function () {
   beginOrder(newOrder);
 };
 
+var pizzaDelivery = () => {
+  if (window.appConfig.pizzaParty.enabled) {
+    window.location.href = 'pizza.html';
+  } else {
+    alert("Your pizza is on it's way!!")
+  }
+}
+
 var beginOrder = function (existingOrder = null) {
+
   var pieSize;
   $('#size-select input').click(() => {
     $('#submit-order').attr('disabled', false);
